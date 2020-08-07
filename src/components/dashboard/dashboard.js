@@ -1,9 +1,13 @@
 import React, { Component } from "react";
-
+import Header from "../header";
+import Footer from "../footer";
+import Sidebar from "../sidebar";
 class Dashboard extends Component {
 	render() {
 		return (
 			<div>
+				<Header />
+				<Sidebar />
 				<div className="content-wrapper">
 					{/* Content Header (Page header) */}
 					<div className="content-header">
@@ -877,6 +881,7 @@ class Dashboard extends Component {
 					</section>
 					{/* /.content */}
 				</div>
+				<Footer />
 			</div>
 		);
 	}

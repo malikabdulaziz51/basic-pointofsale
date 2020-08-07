@@ -10,6 +10,11 @@ const SigninSchema = Yup.object().shape({
 	password: Yup.string().required("Password is required")
 });
 class Login extends Component {
+	componentDidMount() {
+		if (localStorage.getItem("TOKEN_KEY") != null) {
+			return this.props.history.goBack();
+		}
+	}
 	submitForm = (values, history) => {
 		axios
 			.post("http://localhost:8080/login", values)

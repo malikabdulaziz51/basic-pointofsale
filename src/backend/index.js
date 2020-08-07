@@ -1,13 +1,17 @@
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-require("./db");
-const Users = require("./models/user_schema");
 const jwt = require("./jwt");
+const Users = require("./models/user_schema");
+const formidable = require("formidable");
+const path = require("path");
+const fs = require("fs");
 
+require("./db");
+const app = express();
 app.use(cors());
+app.use(express.static(__dirname + "/uploaded"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -43,6 +47,51 @@ app.post("/login", async (req, res) => {
 		}
 	} else {
 		res.json({ result: "error", message: "Invalid user" });
+	}
+});
+
+app.get("/profile/id/:id", async (req, res) => {
+	let user = await Users.findOne({ _id: req.params.id });
+	res.json(user);
+});
+
+uploadImage = async (files, user) => {
+	if (files.avatars != null) {
+		var fileExtension = files.avatars.name.split(".").pop();
+		user.avatars = `${Date.now()}+${user.username}.${fileExtension}`;
+		var newPath =
+			path.resolve(__dirname + "/uploaded/images/") + "/" + user.avatars;
+		// console.log(fs.exists(newPath));
+		// if (fs.exists(newPath)) {
+		// 	await fs.remove(newPath);
+		// }
+
+		// await fs.renameSync(files.avatars.path, newPath, (err) => {
+		// 	if (err) throw err;
+		// 	console.log("Rename complete!");
+		// });
+
+		var readStream = fs.createReadStream(files.avatars.path);
+		var writeStream = fs.createWriteStream(newPath);
+		readStream.pipe(writeStream);
+		await readStream.on("end", function() {
+			fs.unlinkSync(files.avatars.path);
+		});
+
+		await Users.findOneAndUpdate({ _id: user.id }, user);
+	}
+};
+
+app.put("/profile", async (req, res) => {
+	try {
+		var form = new formidable.IncomingForm();
+		form.parse(req, async (err, fields, files) => {
+			let user = await Users.findOneAndUpdate({ _id: fields.id }, fields);
+			await uploadImage(files, fields);
+			res.json({ result: "success", message: "Updated Successfully!" });
+		});
+	} catch (err) {
+		res.json({ result: "error", message: err.errmsg });
 	}
 });
 
