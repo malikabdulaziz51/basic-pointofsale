@@ -1,14 +1,5 @@
-import React, { Component } from "react";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
-import swal from "sweetalert";
-import "./login.css";
+import React, { Component } from 'react';
 
-const SigninSchema = Yup.object().shape({
-	username: Yup.string().required("Username is Required"),
-	password: Yup.string().required("Password is required")
-});
 class Login extends Component {
 	componentDidMount() {
 		if (localStorage.getItem("TOKEN_KEY") != null) {

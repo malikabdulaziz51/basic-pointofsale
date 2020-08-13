@@ -14,7 +14,6 @@ app.use(cors());
 app.use(express.static(__dirname + "/uploaded"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 app.get("/", function(req, res, next) {
 	return res.send("Hello nodejs");
 });
