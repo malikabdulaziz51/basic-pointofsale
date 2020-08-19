@@ -82,7 +82,7 @@ class Header extends Component {
 								<div className="dropdown-divider" />
 								<Link to="/profile" className="dropdown-item">
 									<i className="fas fa-user-alt mr-2" />
-									Update Profile
+									Update Profile LLL
 								</Link>
 								<div className="dropdown-divider" />
 								<a
